@@ -6,3 +6,4 @@ alembic
 pyjwt
 bcrypt
 python-multipart
+yfinance
