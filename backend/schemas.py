@@ -17,3 +17,7 @@ class AccountRead(AccountCreate):
 
     id: int
     created_at: datetime
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

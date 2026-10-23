@@ -6,8 +6,13 @@ from database import get_db
 from models import Account
 from schemas import AccountCreate, AccountRead
 
-router = APIRouter(prefix="/accounts", tags=["accounts"])
+from security import get_current_user
 
+router = APIRouter(
+    prefix="/accounts",
+    tags=["accounts"],
+    dependencies=[Depends(get_current_user)],
+)
 
 @router.get("", response_model=list[AccountRead])
 def list_accounts(db: Session = Depends(get_db)):
