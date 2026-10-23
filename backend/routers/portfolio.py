@@ -89,8 +89,7 @@ def positions(db: Session = Depends(get_db)):
     return build_positions(db)
 
 
-@router.get("/accounts", response_model=list[AccountValue])
-def account_values(db: Session = Depends(get_db)):
+def compute_account_values(db: Session) -> list[AccountValue]:
     accounts = db.scalars(select(Account).order_by(Account.id)).all()
     cash = build_cash(db, accounts)
     holdings = {a.id: Decimal(0) for a in accounts}
@@ -98,7 +97,7 @@ def account_values(db: Session = Depends(get_db)):
 
     for p in build_positions(db):
         if p.market_value is None:
-            holdings[p.account_id] += p.total_cost  # faute de cours : estimé au prix de revient
+            holdings[p.account_id] += p.total_cost
             unpriced[p.account_id] += 1
         else:
             holdings[p.account_id] += p.market_value
@@ -115,3 +114,8 @@ def account_values(db: Session = Depends(get_db)):
         )
         for a in accounts
     ]
+
+
+@router.get("/accounts", response_model=list[AccountValue])
+def account_values(db: Session = Depends(get_db)):
+    return compute_account_values(db)

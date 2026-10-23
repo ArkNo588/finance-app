@@ -62,3 +62,16 @@ class AssetPrice(Base):
     fetched_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+class PortfolioSnapshot(Base):
+    __tablename__ = "portfolio_snapshots"
+    __table_args__ = (UniqueConstraint("account_id", "snapshot_date"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    account_id: Mapped[int] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True
+    )
+    snapshot_date: Mapped[DateType] = mapped_column(Date)
+    cash: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+    holdings_value: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+    total_value: Mapped[Decimal] = mapped_column(Numeric(14, 2))

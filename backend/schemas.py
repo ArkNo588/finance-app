@@ -94,3 +94,12 @@ class PriceRead(BaseModel):
     price: Decimal
     currency: str
     price_date: DateType
+
+class SnapshotRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    account_id: int
+    snapshot_date: DateType
+    cash: Decimal
+    holdings_value: Decimal
+    total_value: Decimal
